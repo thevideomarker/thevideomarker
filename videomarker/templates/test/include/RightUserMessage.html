@@ -1,0 +1,24 @@
+<div id="wsb-element-00000000-0000-0000-0000-000688259886"
+						class="wsb-element-text" data-type="element">
+						<div class="txt ">
+						{% if user.is_authenticated %}
+							<p style="text-align: right;">
+								<span class="editor_color_white">Logged in as {{user.username}} | <span
+									class="editor_color_gold"><a href="/logout"
+										target="">Logout</a></span>
+								</span>
+							</p>
+						{% else %}
+							<p style="text-align: right;">
+								<span class="editor_color_white">Welcome Guest | <span
+									class="editor_color_gold"><a href="/loginuser"
+										target="">Login | </a></span><span
+									class="editor_color_gold"><a href="/registeruser"
+										target="">Signup</a></span>
+								</span>
+							</p>
+						
+						{% endif %}
+							
+						</div>
+					</div>

@@ -1,0 +1,51 @@
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<script>
+var vm_client_auth_token = 'testtoken';
+var vm_client_auth_edit_token = 'testedittoken';
+</script>
+
+
+<script src="/static/videomarker-1.0.js?v=234"></script>
+
+<script>
+var vm_client_auth_token = 'testtoken';
+var vm_client_auth_edit_token = 'testedittoken';
+</script>
+
+<title>
+Play Video
+</title>
+</head>
+<body>
+
+<input type='hidden' id='vm_client_id' value='1'/>
+<input type='hidden' id='vm_page_name' value='testpage'/>
+<input type='hidden' id='vm_user_id' value='1'/>
+
+<h2> Video </h2> <br/>
+
+{{ error }}
+
+Playing video : {{file.file_name}}<br/>
+ 
+ file id : {{file.pk}}<br/> 
+
+ <video width="800" controls id="testDiv" class="vm_editable_video">	
+  <source src='{{"http://videoguide-sportsvideo.rhcloud.com/"|add:file.file.url}}'> type="video/mp4">  
+  Your browser does not support HTML5 video.
+</video>
+
+<!--<video width="800" controls id="testDiv1" >	
+  <source src='{{"http://localhost:8000/"|add:file.file.url|add:".mp4"}}'> type="video/mp4">  
+  Your browser does not support HTML5 video.
+</video> -->
+
+<br/>
+<!--<a href='{{"http://localhost:8000/videos/"|add:file.file.url}}'> {{file.file_name}}</a><br/> -->
+ 
+ 
+</body>
+</html>

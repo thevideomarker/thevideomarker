@@ -1,0 +1,17 @@
+<html>
+<head>
+<title>
+Video Play - Logon form
+</title>
+</head>
+<body>
+<h2> Login page </h2> <br/>
+
+{{ error }}
+<form enctype="multipart/form-data" action="/loginUser/" method="post">
+    {% csrf_token %}
+    {{ form }} <br/>
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</html>

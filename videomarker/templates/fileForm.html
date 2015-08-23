@@ -1,0 +1,11 @@
+<html>
+<body>
+<h2> Welcome to the site!! </h2> <br/>
+
+<form enctype="multipart/form-data" action="/uploadForm/" method="post">
+    {% csrf_token %}
+    {{ form }} <br/>
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</html>

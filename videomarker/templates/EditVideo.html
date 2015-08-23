@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>Edit Video</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+function enableTrackBtn() {
+	$("#addTrack").enabled;
+}
+
+var noOfTracks = 0;
+$( document ).ready(function() {
+	
+	$("#addTrackText").bind("keypress",function() {
+		$("#addTrack").removeAttr("disabled");
+	});
+	
+	$("#addTrack").bind("click",function() {
+		
+		var trackName = $("#addTrackText").val();
+		var trackDiv = $("#"+trackName);
+		//if(trackDiv != undefined) {
+			//alert('duplicate');
+		//}
+		noOfTracks = noOfTracks+1;
+		$("#trackHolder").append('<div class="trackWrapper" id="trackWrapperDiv'+noOfTracks+'"><div id="trackLabel'+noOfTracks+'" class="trackLabel"></div><div id="'+trackName+'"></div><input type="button" id="'+noOfTracks+'" value="Start" class="startButton"/><div id="timeWrapperDiv_'+noOfTracks+'" class="timeWrapper"></div></div>');
+		$("#trackLabel"+noOfTracks).html(trackName);
+		hookStartButtons();
+	});
+	
+	var timesetId = 0;
+	
+	function hookStartButtons () {
+	$(".startButton").bind("click",function() {		
+		
+		var id = this.id;
+		var video = document.getElementById('video');
+		var currentTime = video.currentTime;		
+		//$("#timeWrapperDiv_"+id).append('<div class="timeSet"></div>');
+		if($("#"+id).hasClass("endButton")) {
+			video.pause();
+			$("#timeSet_"+timesetId).append('<div class="endTimeDiv" id="endTimeDiv_'+timesetId+'">'+currentTime+'</div>');
+			//$("#"+id).addClass("startButton");
+			$("#"+id).removeClass("endButton");
+			this.value = "Start";
+		} else {
+			var timeSetDiv = document.createElement('div');
+			timeSetDiv.className = "timeSetDiv";
+			timesetId = timesetId+1;
+			timeSetDiv.id = "timeSet_"+timesetId;			
+			timeSetDiv.innerHTML = timeSetDiv.innerHTML + '<div class="startTimeDiv" id="startTimeDiv_'+timesetId+'">'+currentTime+'</div> - ';
+			$("#timeWrapperDiv_"+id).append(timeSetDiv);
+			$("#"+id).addClass("endButton");
+			//$("#"+id).removeClass("startButton");
+			this.value = "End";
+			video.play();
+		}
+		
+		//hookEndButtons();
+	});	
+	}
+	
+	$("#submit").bind("click",function () {
+		
+		var tracks = [];
+		
+		
+		$(".trackWrapper").each(function() {			
+			var timeSets = [];
+			
+			var trackName;			
+			$(this).find(".timeSetDiv").each(function() {
+				console.log(this.id);
+				var timeSet;
+				var id=this.id.substr(8);
+				var startTime;
+				var endTime;
+				
+				startTime = $(this).find("#startTimeDiv_"+id).text();
+				endTime = $(this).find("#endTimeDiv_"+id).text();
+				timeSet = {"start":startTime,"end":endTime}
+				timeSets.push(timeSet);
+			});
+			var track = {"trackName":$(this).find(".trackLabel").text(), "timeSets":timeSets};
+			tracks.push(track);			
+			});
+			var fileId = $("#hdnFileId").val();
+			console.log(fileId);
+			var updateRequest = {"fileId":fileId,"tracks":tracks};
+		console.log(updateRequest);
+		$.ajax({
+			type: 'POST',
+			url: '/editVideo/',
+			data: JSON.stringify(updateRequest),
+			success: function(data) { alert('data: ' + data); },
+			contentType: "application/json",
+			dataType: 'json'
+		});
+	});
+	
+	
+	
+	
+	var finalJson;	
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+            // Only send the token to relative URLs i.e. locally.
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+</script>
+</head>
+
+
+<body>
+File name: {{file.file_name}}<br/>
+ <video width="800" controls id="video" >	
+  <source src='{{"http://localhost:8000/"|add:file.file.url|add:".mp4"}}'> type="video/mp4">  
+  Your browser does not support HTML5 video.
+</video>
+
+<div id="controlsWrapper">
+	<input type="text" style="" id="addTrackText"/>
+	<input type="button" value="Add Track" id="addTrack" disabled="true"/>
+	<input type="hidden" id="hdnFileId" value="{{file.pk}}"/>
+	<div id="trackHolder">
+	</div>
+	
+<div>
+{% csrf_token %}
+<input type="button" id="submit" value="Submit"/>
+
+</body>
+</html>

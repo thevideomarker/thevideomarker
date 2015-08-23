@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>
+Video Play - Video list
+</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+
+$( document ).ready(function() {
+	$(".links").each(function(){
+		var id = this.id;		
+		var link = "http://thevideomarker.com/watchVideo/?fileId="+this.id;		
+		$(this).find(".videoLink").attr("href",link);
+		var editLink = "http://thevideomarker.com/editVideo/?fileId="+this.id;		
+		$(this).find(".editVideoLink").attr("href",editLink);
+	});
+});	
+	
+</script>
+
+</head>
+<body>
+<h2> Video list </h2> <br/>
+
+
+{{ error }}
+
+Welcome {{user.first_name}} {{user.last_name}} {{user.username}} !! <br/>
+
+File List : <br/>
+ {% for file in user.owner.all %}
+ file id : {{file.pk}} 
+ <div class="links" id="{{file.pk}}">
+ <a class="videoLink" id="{{file.pk}}" href=''> {{file.file_name}} </a><br/>   
+ <a class="editVideoLink" href=''> Edit video </a> <br/>
+ </div>
+<!--<a href='{{"http://localhost:8000/videos/"|add:file.file.url}}'> {{file.file_name}}</a><br/> -->
+ {% endfor %}
+ 
+</body>
+</html>
